@@ -119,7 +119,22 @@ app.post('/add-to-cart', async (req, res, next) => {
       res.status(404).json({ error: 'Product not found' });
       return;
     }
+    app.post('/remove-from-cart', async (req, res, next) => {
+  try {
+    const { productId } = req.body;
+    const user = req.user;
 
+    if (!user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      res.status(404).json({ error: 'Product not found' });
+      return;
+    }
     const existingCartItem = user.cart.find(item => item.productId.toString() === productId);
 
     if (existingCartItem) {
