@@ -177,6 +177,51 @@ app.get('/products/:productId', async (req, res, next) => {
     next(error);
   }
 });
+    // Add a product
+app.put('/products', (req, res) => {
+  const createProductDTO = req.body;
+  const product = productService.addProduct(createProductDTO);
+  res.json(product);
+});
+
+// Update a product
+app.post('/products', (req, res) => {
+  const productDTO = req.body;
+  const product = productService.updateProduct(productDTO);
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
+
+// Get all products
+app.get('/products', (req, res) => {
+  const products = productService.getAllProducts();
+  res.json(products);
+});
+
+// Get details of a specific product
+app.get('/products/:productId', (req, res) => {
+  const productId = req.params.productId;
+  const product = productService.getProductDetails(productId);
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
+
+// Delete a specific product
+app.delete('/products/:productId', (req, res) => {
+  const productId = req.params.productId;
+  const success = productService.deleteProduct(productId);
+  if (success) {
+    res.status(204).send(); // NO_CONTENT
+  } else {
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
 
 // Function to seed the database with products from products.json
 const seedDatabase = async () => {
